@@ -1,23 +1,12 @@
-﻿<?php
+<?php
+
+// Import main config
+require_once('config.php');
+
 function get_members($group=FALSE,$inclusive=FALSE) {
-    // Active Directory server
-    $ldap_host = "dc.domain.local";
 
-    // Active Directory DN
-    $ldap_dn = "OU=Users,OU=Users,DC=domain,DC=local";
-
-    // Active Directory user
-    $user = "domain\Administrator";
-    $password = "Qwerty123";
-
-    // User attributes we want to keep
-    // List of User Object properties:
-    // http://www.dotnetactivedirectory.com/Understanding_LDAP_Active_Directory_User_Object_Properties.html
-    $keep = array(
-        "cn",
-        "mobile",
-        "telephonenumber"
-    );
+    // Import LDAP config
+    require_once('config-ldap.php');
 
     // Connect to AD
     $ldap = ldap_connect($ldap_host) or die("Could not connect to LDAP");
@@ -28,7 +17,6 @@ function get_members($group=FALSE,$inclusive=FALSE) {
     // Begin building query
     if($group) $query = "(&"; else $query = "";
 
-    // list enabled users
     $query .= "(&(objectClass=user)(objectCategory=person)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))";
 
     // Close query
@@ -60,13 +48,12 @@ function get_members($group=FALSE,$inclusive=FALSE) {
 
 $quest = get_members();
 
+// Sort by names
 array_multisort($quest, SORT_ASC);
 
-// Sort by CN
-$tmp = Array(); 
-foreach($quest as &$ma) 
-    $tmp[] = &$ma["cn"]; 
-array_multisort($tmp, $quest);
+// Import translation
+$lang_file = "langs/".$lang.".php";
+require_once($lang_file);
 
 // Output
 print "
@@ -75,9 +62,9 @@ print "
     <tr><td>
     <TABLE class='atable' border='1'><thead>";
     print "<TR>";
-    print "<TH> Name </TH>";
-    print "<TH> Phone Number </TH>";
-    print "<TH> Mobile Number </TH>";
+    print "<TH>".$cn."</TH>";
+    print "<TH>".$telephonenumber."</TH>";
+    print "<TH>".$mobile."</TH>";
     print "</TR></thead><tbody>";
 
 for($i=0; $i<count($quest); $i++) {
