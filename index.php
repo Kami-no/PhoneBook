@@ -9,18 +9,18 @@ function get_members($group=FALSE,$inclusive=FALSE) {
     require_once('config-ldap.php');
 
     // Connect to AD
-    $ldap = ldap_connect($ldap_host) or die("Could not connect to LDAP");
+    $ldap = ldap_connect($ldap_host) or die('Could not connect to LDAP');
     ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
     ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
-    ldap_bind($ldap,$user,$password) or die("Could not bind to LDAP");
+    ldap_bind($ldap,$user,$password) or die('Could not bind to LDAP');
 
     // Begin building query
-    if($group) $query = "(&"; else $query = "";
+    if($group) $query = '(&'; else $query = '';
 
-    $query .= "(&(objectClass=user)(objectCategory=person)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))";
+    $query .= '(&(objectClass=user)(objectCategory=person)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))';
 
     // Close query
-    if($group) $query .= ")"; else $query .= "";
+    if($group) $query .= ')'; else $query .= '';
 
     // Search AD
     $results = ldap_search($ldap,$ldap_dn,$query);
@@ -52,31 +52,31 @@ $quest = get_members();
 array_multisort($quest, SORT_ASC);
 
 // Import translation
-$lang_file = "langs/".$lang.".php";
+$lang_file = 'langs/'.$lang.'.php';
 require_once($lang_file);
 
 // Output
-print "
-    <table align='center'>
-    <tbody>
-    <tr><td>
-    <TABLE class='atable' border='1'><thead>";
-    print "<TR>";
-    print "<TH>".$cn."</TH>";
-    print "<TH>".$telephonenumber."</TH>";
-    print "<TH>".$mobile."</TH>";
-    print "</TR></thead><tbody>";
+print '
+    <html><head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Система авторизации в LDAP</title>
+    </head>
+    <body>
+    <table align="center" class="atable" border="1"><thead>';
+    print '<TR>';
+    print '<TH>'.$cn.'</TH>';
+    print '<TH>'.$telephonenumber.'</TH>';
+    print '<TH>'.$mobile.'</TH>';
+    print '</TR></thead><tbody>';
 
 for($i=0; $i<count($quest); $i++) {
-    print "<TR>";
-    print "<TD>" . $quest[$i]["cn"] . " </TD>";
-    print "<TD>" . $quest[$i]["telephonenumber"] . " </TD>";
-    print "<TD>" . $quest[$i]["mobile"] . " </TD>";
-    print "</TR>";
+    print '<TR>';
+    print '<TD>'.$quest[$i]['cn'].' </TD>';
+    print '<TD>'.$quest[$i]['telephonenumber'].' </TD>';
+    print '<TD>'.$quest[$i]['mobile'].' </TD>';
+    print '</TR>';
 }
-print "</tbody></table>
-    </td>
-    </tr>
-    </tbody></table>";
+print '</table>
+    </body><html>';
 
 ?>

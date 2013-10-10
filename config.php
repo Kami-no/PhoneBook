@@ -1,5 +1,5 @@
 <?php
 // Set language
-$lang = "ru";
+$lang = 'ru';
 
 ?>

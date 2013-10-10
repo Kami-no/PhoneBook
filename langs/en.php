@@ -1,7 +1,7 @@
 <?php
 
-$cn = "Full name";
-$telephonenumber = "Telephone Number";
-$mobile = "Mobile";
+$cn = 'Full name';
+$telephonenumber = 'Telephone Number';
+$mobile = 'Mobile';
 
 ?>
